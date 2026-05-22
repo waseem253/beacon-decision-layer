@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beacon — Knowledge & Decision Support</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+ :root{
+  --bg:#f6f7f9;--panel:#fff;--ink:#0f172a;--muted:#64748b;--faint:#94a3b8;
+  --line:#e2e8f0;--accent:#4f46e5;--accent-dk:#4338ca;--accent-bg:#eef2ff;
+  --hi:#059669;--med:#d97706;--lo:#dc2626;--review:#b45309;--review-bg:#fffbeb;
+ }
+ *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);
+  -webkit-font-smoothing:antialiased;height:100vh;display:flex;flex-direction:column}
+ /* header */
+ header{background:var(--panel);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:16px;padding:0 22px;height:60px;flex-shrink:0}
+ .logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#6366f1,#4338ca);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px}
+ .brand b{font-size:16px;font-weight:700;letter-spacing:-.01em}
+ .brand span{display:block;font-size:11px;color:var(--muted);font-weight:500;margin-top:1px}
+ .firm{font-size:12.5px;color:var(--muted);border-left:1px solid var(--line);padding-left:16px}
+ .firm b{color:var(--ink);font-weight:600}
+ .spacer{flex:1}
+ .mode{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--muted);
+  background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:5px 9px}
+ .mode .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--hi);margin-right:5px;vertical-align:1px}
+ .tabs{display:flex;gap:4px}
+ .tab{font-size:13px;font-weight:600;color:var(--muted);background:none;border:0;cursor:pointer;
+  padding:7px 14px;border-radius:8px}
+ .tab.on{background:var(--accent-bg);color:var(--accent-dk)}
+ /* layout */
+ .layout{flex:1;display:flex;overflow:hidden}
+ aside{width:262px;background:var(--panel);border-right:1px solid var(--line);
+  padding:20px 16px;overflow-y:auto;flex-shrink:0}
+ .side-h{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--faint);margin:0 6px 10px}
+ .src{display:block;width:100%;text-align:left;background:none;border:1px solid transparent;
+  border-radius:9px;padding:10px 11px;cursor:pointer;margin-bottom:3px}
+ .src:hover{background:var(--bg)}
+ .src.on{background:var(--accent-bg);border-color:#c7d2fe}
+ .src .nm{font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+ .src .ct{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--faint);font-weight:600}
+ .src.on .ct{color:var(--accent)}
+ .src .ds{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+ .side-note{font-size:11px;color:var(--faint);line-height:1.5;margin:14px 6px 0;padding-top:12px;border-top:1px solid var(--line)}
+ main{flex:1;overflow-y:auto;padding:24px 30px}
+ .wrap{max-width:780px;margin:0 auto}
+ /* composer */
+ .composer{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+ textarea{width:100%;border:0;resize:none;font-family:inherit;font-size:14.5px;color:var(--ink);
+  line-height:1.5;outline:none;min-height:48px}
+ textarea::placeholder{color:var(--faint)}
+ .composer-foot{display:flex;align-items:center;gap:10px;margin-top:10px}
+ .scope{font-size:12px;color:var(--muted)}
+ .scope b{color:var(--accent-dk);font-weight:600}
+ .ask{margin-left:auto;background:var(--accent);color:#fff;border:0;border-radius:9px;
+  font-size:13.5px;font-weight:600;padding:9px 20px;cursor:pointer}
+ .ask:hover{background:var(--accent-dk)}
+ .ask:disabled{opacity:.5;cursor:default}
+ .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+ .chip{font-size:12px;color:var(--muted);background:var(--panel);border:1px solid var(--line);
+  border-radius:100px;padding:6px 12px;cursor:pointer}
+ .chip:hover{border-color:var(--accent);color:var(--accent-dk)}
+ .chip-h{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--faint);margin:22px 0 10px}
+ /* answer cards */
+ .turn{margin-top:18px}
+ .q{font-size:13px;color:var(--muted);font-weight:500;margin-bottom:8px;display:flex;gap:7px}
+ .q::before{content:"Q";font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent);
+  background:var(--accent-bg);border-radius:5px;padding:1px 6px;font-size:11px;height:fit-content}
+ .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+ .ans{font-size:14.5px;line-height:1.62;color:#1e293b}
+ .ans .ref{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;color:var(--accent);
+  background:var(--accent-bg);border-radius:4px;padding:1px 5px}
+ .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
+ .badge{font-size:11px;font-weight:700;letter-spacing:.04em;border-radius:6px;padding:3px 9px;
+  text-transform:uppercase}
+ .b-hi{background:#d1fae5;color:#065f46}.b-med{background:#fef3c7;color:#92400e}
+ .b-lo{background:#fee2e2;color:#991b1b}.b-none{background:#f1f5f9;color:#475569}
+ .tag{font-size:11px;font-weight:600;color:var(--muted);background:var(--bg);
+  border:1px solid var(--line);border-radius:6px;padding:3px 9px;font-family:'JetBrains Mono',monospace}
+ /* citations */
+ .cite-h{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--faint);margin:16px 0 8px}
+ .cite{display:flex;gap:10px;padding:9px 11px;border:1px solid var(--line);border-radius:9px;margin-bottom:6px}
+ .cite-id{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);
+  background:var(--accent-bg);border-radius:5px;padding:2px 6px;height:fit-content}
+ .cite-body{flex:1;min-width:0}
+ .cite-t{font-size:13px;font-weight:600}
+ .cite-m{font-size:11.5px;color:var(--muted);margin-top:2px}
+ .cite-score{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--faint);align-self:center}
+ /* decision brief */
+ .brief{margin-top:14px;border:1px solid #c7d2fe;border-radius:12px;overflow:hidden}
+ .brief-h{background:var(--accent-bg);padding:8px 14px;font-size:11px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--accent-dk)}
+ .brief-b{padding:14px}
+ .brief-lbl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--faint);margin:12px 0 5px}
+ .brief-lbl:first-child{margin-top:0}
+ .brief-k{font-size:12.5px;color:#334155;line-height:1.5;padding:7px 10px;background:var(--bg);
+  border-radius:7px;margin-bottom:5px}
+ .brief-k b{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent)}
+ .review{display:flex;gap:9px;background:var(--review-bg);border:1px solid #fcd34d;
+  border-radius:9px;padding:10px 12px;margin-top:12px}
+ .review-ic{font-size:15px}
+ .review-tx{font-size:12.5px;color:var(--review);line-height:1.45}
+ .review-tx b{font-weight:700}
+ /* dashboard */
+ .dash{display:none}
+ .dash.on{display:block}.ask-view.off{display:none}
+ .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:8px}
+ .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px 16px}
+ .stat .v{font-family:'JetBrains Mono',monospace;font-size:25px;font-weight:700;color:var(--accent-dk)}
+ .stat .l{font-size:11.5px;color:var(--muted);font-weight:500;margin-top:3px}
+ .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-top:14px}
+ .panel h3{font-size:13px;font-weight:700;margin-bottom:10px}
+ .recent{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+ .recent:last-child{border-bottom:0}
+ .recent .rq{color:#334155;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .recent .rt{display:flex;gap:6px;flex-shrink:0}
+ .empty{color:var(--faint);font-size:12.5px;text-align:center;padding:14px}
+ .loading{font-size:13px;color:var(--muted);padding:14px 0}
+ .foot{text-align:center;font-size:11px;color:var(--faint);margin:26px 0 8px}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">B</div>
+ <div class="brand"><b>Beacon</b><span>Knowledge &amp; Decision Support</span></div>
+ <div class="firm" id="firm">&nbsp;</div>
+ <div class="spacer"></div>
+ <div class="mode" id="mode"><span class="dot"></span>&nbsp;</div>
+ <div class="tabs">
+  <button class="tab on" id="tabAsk" onclick="showTab('ask')">Ask</button>
+  <button class="tab" id="tabDash" onclick="showTab('dash')">Dashboard</button>
+ </div>
+</header>
+
+<div class="layout">
+ <aside>
+  <div class="side-h">Knowledge Sources</div>
+  <div id="sources"><div class="loading">Loading…</div></div>
+  <div class="side-note">An internal knowledge layer — retrieval is federated across every connected source. Pick a source to scope a query, or leave on <b>All sources</b>.</div>
+ </aside>
+
+ <main>
+  <div class="wrap">
+   <div class="ask-view" id="askView">
+    <div class="composer">
+     <textarea id="q" placeholder="Ask about projects, budgets, methodology, clients — or pose a decision question…" rows="2"></textarea>
+     <div class="composer-foot">
+      <div class="scope">Scope: <b id="scopeLabel">All sources</b></div>
+      <button class="ask" id="askBtn" onclick="ask()">Ask</button>
+     </div>
+    </div>
+    <div class="chip-h">Try a question</div>
+    <div class="chips" id="chips"></div>
+    <div id="transcript"></div>
+   </div>
+
+   <div class="dash" id="dashView">
+    <div class="grid" id="statGrid"></div>
+    <div class="panel">
+     <h3>Recent queries</h3>
+     <div id="recent"><div class="empty">No queries yet.</div></div>
+    </div>
+   </div>
+
+   <div class="foot">Beacon · internal knowledge &amp; decision-support layer · demo build</div>
+  </div>
+ </main>
+</div>
+
+<script>
+const SESSION = "s-" + Math.random().toString(36).slice(2, 10);
+let activeSource = null;
+let sourceNames = {};
+
+const SAMPLES = [
+ "What is the status of the Atterly Retail engagement?",
+ "Should we start a new engagement before April?",
+ "How does Meridian price fixed-price work?",
+ "Which pricing approach was recommended for Vance Manufacturing?",
+ "What are the sensitivities to know about Halcyon Health?",
+ "Summarise the cost savings delivered for Atterly Retail."
+];
+
+function esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+function refs(t){return esc(t).replace(/\[([A-Z]{2}-\d+)\]/g,'<span class="ref">[$1]</span>');}
+
+async function loadSources(){
+ const r = await fetch('/api/sources'); const d = await r.json();
+ document.getElementById('firm').innerHTML = 'Account: <b>'+esc(d.firm)+'</b>';
+ let html = '<button class="src on" onclick="pickSource(null,this)">'
+  +'<div class="nm">All sources</div>'
+  +'<div class="ds">Federated retrieval across everything connected</div></button>';
+ d.sources.forEach(s=>{
+  sourceNames[s.id]=s.name;
+  html += '<button class="src" onclick="pickSource(\''+s.id+'\',this)">'
+   +'<div class="nm">'+esc(s.name)+'<span class="ct">'+s.document_count+'</span></div>'
+   +'<div class="ds">'+esc(s.description)+'</div></button>';
+ });
+ document.getElementById('sources').innerHTML = html;
+}
+function pickSource(id,el){
+ activeSource = id;
+ document.querySelectorAll('.src').forEach(x=>x.classList.remove('on'));
+ el.classList.add('on');
+ document.getElementById('scopeLabel').textContent = id ? sourceNames[id] : 'All sources';
+}
+function loadChips(){
+ document.getElementById('chips').innerHTML = SAMPLES.map(s=>
+  '<button class="chip" onclick="setQ(this)">'+esc(s)+'</button>').join('');
+}
+function setQ(el){document.getElementById('q').value=el.textContent;document.getElementById('q').focus();}
+
+const CONF={high:'b-hi',medium:'b-med',low:'b-lo',none:'b-none'};
+
+async function ask(){
+ const q = document.getElementById('q').value.trim();
+ if(!q) return;
+ const btn = document.getElementById('askBtn');
+ btn.disabled = true; btn.textContent = 'Thinking…';
+ try{
+  const r = await fetch('/api/query',{method:'POST',headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({query:q,session_id:SESSION,source:activeSource})});
+  const d = await r.json();
+  if(!r.ok){ renderError(q, d.error||'request failed'); }
+  else { renderTurn(d); }
+  document.getElementById('q').value='';
+ }catch(e){ renderError(q,'network error'); }
+ btn.disabled=false; btn.textContent='Ask';
+}
+
+function renderError(q,msg){
+ const div=document.createElement('div');div.className='turn';
+ div.innerHTML='<div class="q">'+esc(q)+'</div><div class="card"><div class="ans">'
+  +'Could not answer — '+esc(msg)+'.</div></div>';
+ prepend(div);
+}
+
+function renderTurn(d){
+ const div=document.createElement('div'); div.className='turn';
+ let h='<div class="q">'+esc(d.query)+'</div><div class="card">';
+ h+='<div class="ans">'+refs(d.answer)+'</div>';
+
+ if(d.decision_brief){ h+=brief(d.decision_brief); }
+
+ h+='<div class="meta">';
+ h+='<span class="badge '+(CONF[d.confidence]||'b-none')+'">'+esc(d.confidence)+' confidence</span>';
+ h+='<span class="tag">synthesis: '+esc(d.synthesis_mode)+'</span>';
+ if(d.is_decision) h+='<span class="tag">decision query</span>';
+ if(d.source_filter) h+='<span class="tag">scoped: '+esc(sourceNames[d.source_filter]||d.source_filter)+'</span>';
+ h+='</div>';
+
+ if(d.citations && d.citations.length){
+  h+='<div class="cite-h">Sources · '+d.citations.length+'</div>';
+  d.citations.forEach(c=>{
+   h+='<div class="cite"><span class="cite-id">'+esc(c.document_id)+'</span>'
+    +'<div class="cite-body"><div class="cite-t">'+esc(c.title)+'</div>'
+    +'<div class="cite-m">'+esc(c.source_name)+' · '+esc(c.date)
+    +(c.matched_terms&&c.matched_terms.length?' · matched: '+esc(c.matched_terms.join(', ')):'')
+    +'</div></div><span class="cite-score">'+c.score.toFixed(3)+'</span></div>';
+  });
+ } else {
+  h+='<div class="cite-h">Sources</div><div class="empty">No source matched this query.</div>';
+ }
+ h+='</div>';
+ div.innerHTML=h;
+ prepend(div);
+}
+
+function brief(b){
+ let h='<div class="brief"><div class="brief-h">Decision Brief</div><div class="brief-b">';
+ h+='<div class="brief-lbl">Recommendation</div><div class="ans" style="font-size:13.5px">'+refs(b.recommendation)+'</div>';
+ if(b.relevant_knowledge && b.relevant_knowledge.length){
+  h+='<div class="brief-lbl">Grounded in</div>';
+  b.relevant_knowledge.forEach(k=>{
+   h+='<div class="brief-k"><b>['+esc(k.document_id)+']</b> '+esc(k.title)+' — '+esc(k.snippet)+'</div>';
+  });
+ }
+ if(b.needs_human_review){
+  h+='<div class="review"><span class="review-ic">&#9888;</span><span class="review-tx">'
+   +'<b>Human review recommended.</b> '+esc(b.review_reason||'')+'</span></div>';
+ }
+ h+='</div></div>';
+ return h;
+}
+
+function prepend(div){
+ const t=document.getElementById('transcript');
+ t.insertBefore(div,t.firstChild);
+}
+
+function showTab(which){
+ const ask=which==='ask';
+ document.getElementById('tabAsk').classList.toggle('on',ask);
+ document.getElementById('tabDash').classList.toggle('on',!ask);
+ document.getElementById('askView').classList.toggle('off',!ask);
+ document.getElementById('dashView').classList.toggle('on',!ask);
+ if(!ask) loadDashboard();
+}
+
+async function loadDashboard(){
+ const r=await fetch('/api/dashboard'); const d=await r.json();
+ const cards=[
+  [d.total_documents,'Documents indexed'],
+  [d.source_count,'Knowledge sources'],
+  [d.queries_handled,'Queries handled'],
+  [d.decision_queries,'Decision queries'],
+  [(d.average_confidence*100).toFixed(0)+'%','Avg. confidence'],
+  [(d.review_rate*100).toFixed(0)+'%','Flagged for review'],
+ ];
+ document.getElementById('statGrid').innerHTML=cards.map(c=>
+  '<div class="stat"><div class="v">'+c[0]+'</div><div class="l">'+c[1]+'</div></div>').join('');
+ const rec=d.recent_queries||[];
+ document.getElementById('recent').innerHTML = rec.length ? rec.map(q=>
+  '<div class="recent"><span class="rq">'+esc(q.query)+'</span><span class="rt">'
+  +'<span class="badge '+(CONF[q.confidence]||'b-none')+'">'+esc(q.confidence)+'</span>'
+  +(q.needs_review?'<span class="tag">review</span>':'')+'</span></div>').join('')
+  : '<div class="empty">No queries yet.</div>';
+}
+
+document.getElementById('q').addEventListener('keydown',e=>{
+ if(e.key==='Enter' && !e.shiftKey){e.preventDefault();ask();}
+});
+async function boot(){
+ await loadSources(); loadChips();
+ const h=await (await fetch('/health')).json();
+ document.getElementById('mode').innerHTML='<span class="dot"></span>synthesis: '+esc(h.synthesis_mode);
+}
+boot();
+</script>
+</body>
+</html>
