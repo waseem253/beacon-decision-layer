@@ -1,0 +1,49 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+ @page{size:Letter;margin:0}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+ html,body{font-family:'Inter',system-ui,sans-serif;color:#0a0a0a;background:#fff;-webkit-font-smoothing:antialiased;font-size:10.5pt;line-height:1.5;letter-spacing:-.005em}
+ body{width:8.5in;min-height:11in;padding:.48in .6in}
+ .hero{display:flex;align-items:center;gap:14px;padding-bottom:16px;border-bottom:2px solid #0a0a0a;margin-bottom:20px}
+ .logo{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#6366f1,#4338ca);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px;flex-shrink:0}
+ .ht{flex:1}.ht h1{font-size:21pt;font-weight:800;letter-spacing:-.03em;line-height:1.05}
+ .ht .s{font-size:10.5pt;color:#525252;font-weight:500;margin-top:3px}
+ .hm{text-align:right;font-size:8.5pt;color:#4338ca;font-family:'JetBrains Mono',monospace;font-weight:600}
+ h2{font-size:13pt;font-weight:700;letter-spacing:-.02em;margin:12px 0 6px}h2:first-of-type{margin-top:4px}
+ p{margin-bottom:6px;color:#404040}p strong{color:#0a0a0a;font-weight:600}
+ .arch{background:#fafafa;border:1px solid #e7e5e4;border-radius:8px;padding:13px 16px;font-family:'JetBrains Mono',monospace;font-size:8.3pt;line-height:1.5;color:#404040;white-space:pre;margin:5px 0 9px}
+ .arch .v{color:#4338ca;font-weight:600}
+ .pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+ .pill{padding:3px 8px;border-radius:6px;background:#eef2ff;border:1px solid #c7d2fe;color:#4338ca;font-family:'JetBrains Mono',monospace;font-size:8.5pt;font-weight:500}
+ .callout{background:#eef2ff;border-left:3px solid #6366f1;padding:8px 12px;border-radius:0 6px 6px 0;margin:7px 0 9px;font-size:9.5pt;color:#312e81}
+ footer{margin-top:14px;padding-top:11px;border-top:1px solid #e7e5e4;display:flex;justify-content:space-between;font-size:9pt;color:#737373}
+ footer .n{color:#0a0a0a;font-weight:600}
+</style></head><body>
+ <div class="hero"><span class="logo">B</span><div class="ht"><h1>Beacon — Knowledge &amp; Decision-Support Layer</h1><div class="s">Ask internal business information in plain language — grounded, traceable, decision-aware</div></div><div class="hm">internal AI<br>knowledge layer</div></div>
+
+ <h2>The problem</h2>
+ <p>A consulting firm's working knowledge is scattered across project records, methodology playbooks, per-client context and past deliverables. Teams lose time searching those sources and coordinating information by hand. The firm wanted an internal AI layer that helps people <strong>access, understand and use</strong> that information efficiently — and supports operational decisions — without becoming a black box. An internal business platform, not a public chatbot.</p>
+
+ <h2>The build</h2>
+ <p>Beacon is a FastAPI service with one query pipeline that handles two shapes of question. A plain question returns a grounded answer; an operational decision question returns a structured <strong>decision brief</strong>. Either way, retrieval is federated across four knowledge sources and every answer carries the exact document ids it rests on — full traceability by default. Synthesis runs on Claude when an API key is present and a deterministic extractive synthesizer otherwise; conversation memory resolves follow-up questions.</p>
+
+ <h2>Architecture</h2>
+ <div class="arch">Consultant — plain question or operational decision
+   └─▶ <span class="v">Beacon API</span> · FastAPI · /api/query
+         └─▶ <span class="v">Federated retrieval</span> · hybrid TF-IDF + keyword
+               └─▶ 4 sources: project records · methodology · client KB · deliverables
+         └─▶ <span class="v">Answer synthesis</span> · Claude | deterministic extractive fallback
+   decision question? ─▶ <span class="v">decision brief</span> (recommendation + grounding + review gate)
+                       ─▶ otherwise: grounded answer  ·  every source cited</div>
+ <p>Retrieval, synthesis, memory and decision logic are separate modules — the seams a production deployment uses to plug in live connectors and a real vector store, with the rest of the system unchanged.</p>
+
+ <div class="callout"><strong>Why it matters:</strong> nothing is asserted without a source — every response lists the documents it used; decision questions with thin or partial evidence raise a human-review flag instead of asserting false confidence; and the extractive fallback means a provider outage degrades answer quality rather than breaking the platform.</p>
+
+ <h2>Verification</h2>
+ <p>A 20-test suite covers retrieval correctness, the synthesis fallback, decision detection, conversation memory and the HTTP API end to end. The live demo was driven and verified in-browser.</p>
+
+ <h2>Stack</h2>
+ <div class="pills"><span class="pill">Python</span><span class="pill">FastAPI</span><span class="pill">Claude</span><span class="pill">hybrid retrieval / RAG</span><span class="pill">pytest</span><span class="pill">Vercel</span></div>
+
+ <footer><div><span class="n">Waseem Iftikhar</span> · AI / Backend Engineer</div><div>Portfolio case study</div></footer>
+</body></html>

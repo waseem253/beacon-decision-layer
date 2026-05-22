@@ -1,0 +1,43 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+ *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+ html,body{width:1280px;height:720px;overflow:hidden}
+ body{font-family:'Inter',system-ui,sans-serif;color:#0a0a0a;display:grid;grid-template-rows:auto 1fr auto;-webkit-font-smoothing:antialiased;position:relative;
+  background:radial-gradient(900px 600px at 95% -8%,rgba(99,102,241,.20) 0%,transparent 55%),radial-gradient(700px 500px at -8% 108%,rgba(67,56,202,.10) 0%,transparent 55%),linear-gradient(180deg,#fff 0%,#fafafa 100%)}
+ body::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(99,102,241,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.05) 1px,transparent 1px);background-size:52px 52px;mask-image:linear-gradient(180deg,#000 0%,transparent 70%);pointer-events:none}
+ .header{padding:36px 60px 0;display:flex;justify-content:space-between;align-items:center;z-index:2;position:relative}
+ .brand{display:flex;align-items:center;gap:14px}
+ .logo{width:44px;height:44px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#6366f1,#4338ca);color:#fff;font-weight:800;font-size:17px;box-shadow:0 8px 20px -4px rgba(99,102,241,.4)}
+ .bn{font-size:22px;font-weight:700;letter-spacing:-.02em}
+ .bt{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#737373;font-weight:600;margin-top:5px}
+ .badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#6366f1,#4338ca);color:#fff;padding:10px 18px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 6px 18px -2px rgba(99,102,241,.42)}
+ .dot{width:6px;height:6px;border-radius:50%;background:#fff;opacity:.9}
+ .center{padding:0 60px;z-index:2;display:flex;flex-direction:column;justify-content:center}
+ h1{font-size:56px;font-weight:800;line-height:1.05;letter-spacing:-.038em;margin-bottom:22px;max-width:1110px}
+ h1 .a{background:linear-gradient(135deg,#6366f1,#4338ca);-webkit-background-clip:text;background-clip:text;color:transparent}
+ .sl{font-size:19.5px;font-weight:500;color:#525252;margin-bottom:30px;max-width:1080px;line-height:1.44}
+ .sl .p{color:#d4d4d4;margin:0 10px}.sl strong{color:#0a0a0a;font-weight:600}
+ .cta{display:inline-flex;align-items:center;gap:14px;background:#fff;border:1px solid #c7d2fe;padding:12px 20px 12px 12px;border-radius:14px;box-shadow:0 4px 14px -2px rgba(99,102,241,.14);margin-bottom:22px;width:fit-content}
+ .ci{width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#6366f1,#4338ca);border-radius:10px;color:#fff;font-size:18px}
+ .cs{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#4338ca;font-weight:700;margin-bottom:4px}
+ .cu{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;color:#0a0a0a}
+ .stats{display:flex;gap:12px;flex-wrap:wrap}
+ .st{display:flex;flex-direction:column;padding:10px 16px;background:#fff;border:1px solid #e7e5e4;border-radius:14px}
+ .sv{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#4338ca}
+ .stl{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#737373;font-weight:600;margin-top:2px}
+ .footer{padding:22px 60px 28px;display:flex;justify-content:space-between;align-items:center;z-index:2;background:#fff;border-top:1px solid #e7e5e4;position:relative}
+ .stk{font-size:13.5px;color:#525252;line-height:1.4}
+ .stk .l{color:#a3a3a3;margin-right:8px;font-weight:500;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase}
+ .stk strong{color:#0a0a0a;font-weight:600}
+ .au{text-align:right}.au .n{font-size:19px;font-weight:700;letter-spacing:-.012em;margin-bottom:3px}.au .t{font-size:13.5px;font-weight:500;color:#737373}
+</style></head><body>
+ <div class="header"><div class="brand"><span class="logo">B</span><div><div class="bn">Beacon</div><div class="bt">Knowledge &amp; Decision Support</div></div></div><div class="badge"><span class="dot"></span>Live Demo</div></div>
+ <div class="center">
+  <h1>Ask your business<br><span class="a">in plain language.</span></h1>
+  <div class="sl">An internal knowledge layer &mdash; federated retrieval across every source, grounded answers with full traceability <span class="p">·</span> <strong>decision questions get a review-gated brief</strong></div>
+  <div class="cta"><span class="ci">&#9654;</span><span><div class="cs">Try it live</div><div class="cu">beacon-decision-layer.vercel.app</div></span></div>
+  <div class="stats"><div class="st"><span class="sv">4</span><span class="stl">knowledge sources</span></div><div class="st"><span class="sv">100%</span><span class="stl">answers source-cited</span></div><div class="st"><span class="sv">review-gated</span><span class="stl">decision briefs</span></div><div class="st"><span class="sv">0-key</span><span class="stl">offline fallback</span></div></div>
+ </div>
+ <div class="footer"><div class="stk"><span class="l">Built with</span><strong>Python</strong> · <strong>FastAPI</strong> · <strong>Claude</strong> · <strong>hybrid retrieval / RAG</strong> · <strong>Vercel</strong></div><div class="au"><div class="n">Waseem Iftikhar</div><div class="t">AI / Backend Engineer</div></div></div>
+</body></html>
